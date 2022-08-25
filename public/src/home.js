@@ -79,7 +79,15 @@ const getMostPopularBooks = books => {
   }
   return bookList.sort((a,b) =>  a.count < b.count ? 1 : -1).slice(0,5);
 }
-
+/**
+ * @param {*} authors - array of author objects
+ * @param {*} idNumber - num that searches for author's id
+ * @returns an author's object that matches the idNumber parameter
+ */
+const extractAuthorsInfo = (authors, idNumber) => {
+  const author = findAuthorById(authors, idNumber);
+  return author;
+}
 /**
  * @param {*} books -an array of book objects
  * @param {*} authors - an array of author objects
@@ -95,8 +103,9 @@ const getMostPopularAuthors = (books, authors) => {
   const result = []; // array to push 
   const mostPopularBookTitles = getMostPopularBooks(books).map(title => title.name);
   books.forEach(book => {
-    const  {name, id} = findAuthorById(authors, book.authorId); // destruct name and id 
-    const {first, last} = name; // destruct first and last key
+    const authorsInfo = extractAuthorsInfo(authors, book.authorId);
+    const {name, id} = authorsInfo;
+    const {first, last} = name;
     const newObj = {name: `${first} ${last}` , count: 0}; // build the object
     if (book.authorId === id) {
       newObj.count += book.borrows.length; // count key increments by the length of the borrows array
